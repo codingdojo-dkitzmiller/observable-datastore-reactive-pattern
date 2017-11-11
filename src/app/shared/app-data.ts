@@ -27,18 +27,20 @@ class SubjectImplementation implements Subject {
 // these are the only visible globals
 
 
-class DataStore {
+class DataStore implements Observable {
+
+    subscribe(obs: Observer) {
+        this.lessonsListSubject.subscribe(obs);
+        obs.next(this.lessons);
+    }
+
+    unsubscribe(obs: Observer) {
+        this.lessonsListSubject.unsubscribe(obs)
+    }
 
     private lessons: Lesson[] = [];
     private lessonsListSubject = new SubjectImplementation();
 
-    public lessonsList$: Observable = {
-        subscribe: (obs) => {
-            this.lessonsListSubject.subscribe(obs);
-            obs.next(this.lessons);
-        },
-        unsubscribe: (obs) => this.lessonsListSubject.unsubscribe(obs)
-    };
 
     public addLesson(data: Lesson) {
         // Important: clone the data
